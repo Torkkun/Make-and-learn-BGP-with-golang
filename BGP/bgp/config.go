@@ -1,35 +1,35 @@
 package bgp
 
 import (
-	"fmt"
+	"log"
 	"strconv"
 	"strings"
 )
 
-type Mode int
-
+// Mode
 const (
-	Passive Mode = iota
+	_ = iota
+	Passive
 	Active
 )
 
 type Config struct {
-	Local_as_number   uint16
+	Local_as_number   AutonomousSystemNumber
 	Local_ip_address  string
-	Remote_as_number  uint16
+	Remote_as_number  AutonomousSystemNumber
 	Remote_ip_address string
-	Mode              Mode
+	Mode              int
 }
 
-func ModeParseFromStr(s string) (Mode, error) {
+func ModeParseFromStr(s string) int {
 	switch s {
 	case "active":
-		return Active, nil
+		return Active
 	case "passive":
-		return Passive, nil
+		return Passive
 	default:
-		// 0はactiveなので
-		return -1, fmt.Errorf("Mode Parse Error")
+		log.Fatalln("MODE ERROR")
+		return 0
 	}
 }
 
@@ -43,15 +43,13 @@ func ConfigParseFromStr(configMessage string) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
-	mode, err := ModeParseFromStr(confStr[4])
-	if err != nil {
-		return nil, err
-	}
+	mode := ModeParseFromStr(confStr[4])
+
 	return &Config{
-		Local_as_number: uint16(localAsNumber),
+		Local_as_number: AutonomousSystemNumber(uint16(localAsNumber)),
 		//Local_ip_address:  utils.Iptobyte(confStr[1]),
 		Local_ip_address: confStr[1],
-		Remote_as_number: uint16(remoteAsNumber),
+		Remote_as_number: AutonomousSystemNumber(uint16(remoteAsNumber)),
 		//Remote_ip_address: utils.Iptobyte(confStr[3]),
 		Remote_ip_address: confStr[3],
 		Mode:              mode,

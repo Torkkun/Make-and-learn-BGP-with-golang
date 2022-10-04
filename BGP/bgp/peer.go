@@ -11,6 +11,7 @@ const (
 	Idle State = iota
 	Connect
 	OpenSent
+	OpenConfirm
 )
 
 type Event int
@@ -56,17 +57,25 @@ func (peer *Peer) createTcpConnectionToRemoteIp() (net.Conn, error) {
 		peer.Event_queue.enqueue(TcpCrAcked)
 		return conn, nil
 	} else {
-		listen, err := net.Listen("tcp", ":179")
+		addr := peer.Config.Local_ip_address + ":179"
+		listner, err := net.Listen("tcp", addr)
 		if err != nil {
-			log.Println("179portにバインドできません")
+			log.Println("179 port can't bind")
 			return nil, err
 		}
-		conn, err := listen.Accept()
+
+		host, port, err := net.SplitHostPort(listner.Addr().String())
+		if err != nil {
+			panic(err)
+		}
+		log.Printf("Listening on host: %s, port: %s\n", host, port)
+
+		conn, err := listner.Accept()
 		if err != nil {
 			return nil, err
 		}
 		peer.Event_queue.enqueue(TcpConnectionConfirmed)
-		return conn, err
+		return conn, nil
 	}
 }
 
@@ -79,7 +88,6 @@ func (peer *Peer) handleEvent(event Event) {
 			if err != nil {
 				log.Fatalln(err)
 			}
-			defer conn.Close()
 			peer.TcpConnection = conn
 			peer.Now_state = Connect
 		default:
