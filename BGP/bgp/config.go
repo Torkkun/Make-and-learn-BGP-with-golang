@@ -14,9 +14,9 @@ const (
 )
 
 type Config struct {
-	Local_as_number   AutonomousSystemNumber
+	Local_as_number   uint16
 	Local_ip_address  string
-	Remote_as_number  AutonomousSystemNumber
+	Remote_as_number  uint16
 	Remote_ip_address string
 	Mode              int
 }
@@ -46,10 +46,10 @@ func ConfigParseFromStr(configMessage string) (*Config, error) {
 	mode := ModeParseFromStr(confStr[4])
 
 	return &Config{
-		Local_as_number: AutonomousSystemNumber(uint16(localAsNumber)),
+		Local_as_number: uint16(localAsNumber),
 		//Local_ip_address:  utils.Iptobyte(confStr[1]),
 		Local_ip_address: confStr[1],
-		Remote_as_number: AutonomousSystemNumber(uint16(remoteAsNumber)),
+		Remote_as_number: uint16(remoteAsNumber),
 		//Remote_ip_address: utils.Iptobyte(confStr[3]),
 		Remote_ip_address: confStr[3],
 		Mode:              mode,
