@@ -19,10 +19,10 @@ type BGPBody interface {
 // Message type
 const (
 	_ = iota
-	Open
-	UPDATE
-	NOTIFICATION
-	KEEPALIVE
+	MSG_Open
+	MSG_UPDATE
+	MSG_NOTIFICATION
+	MSG_KEEPALIVE
 )
 
 // RFC
@@ -119,7 +119,7 @@ type BgpOpenMessage struct {
 
 func NewBgpOpenMessage(myas uint16, holdtime uint16, id string, optparams []uint8) *BGPMessage {
 	return &BGPMessage{
-		Header: BgpMessageHeader{Type: Open},
+		Header: BgpMessageHeader{Type: MSG_Open},
 		Body:   &BgpOpenMessage{4, myas, holdtime, net.ParseIP(id).To4(), 0, optparams},
 	}
 }

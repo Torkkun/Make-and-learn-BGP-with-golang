@@ -1,5 +1,8 @@
 package bgp
 
+// 状態遷移ハンドラはserver/fsmに移行する
+// コンフィグはconfigに移行する
+
 import (
 	"log"
 	"strconv"

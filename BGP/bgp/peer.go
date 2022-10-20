@@ -5,15 +5,6 @@ import (
 	"net"
 )
 
-type State int
-
-const (
-	Idle State = iota
-	Connect
-	OpenSent
-	OpenConfirm
-)
-
 type Event int
 
 const (
@@ -25,7 +16,7 @@ const (
 type Peer struct {
 	Config        *Config
 	Event_queue   *EventQueue
-	Now_state     State
+	Now_state     FSM_State
 	TcpConnection net.Conn
 }
 
